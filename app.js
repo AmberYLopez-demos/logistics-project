@@ -7,7 +7,12 @@ var _ = require('underscore');
 var serveStatic = require('serve-static');
 // 设置端口号
 var port = process.env.PORT || 3000;
+var Goods = require('./models/goods');
 var app = express();
+
+mongoose.connect('mongodb://localhost/logistics');
+
+app.locals.moment = require('moment');
 
 // 设置根目录及模板引擎
 app.set('views', './views/pages');
@@ -71,6 +76,43 @@ app.get('/goods/list',function (req,res) {
     })
 });
 
+//商品入库
+app.get('/goods/add',function (req, res) {
+    res.render('goods-put',{
+        title:'商品入库',
+        goods:{
+            _id:'',
+            type:'',
+            warehouse:'',
+            other:''
+        }
+    })
+});
+
+app.post('/goods/new', function (req, res) {
+    var id = req.body.goods._id;
+    var goodsObj = req.body.goods;
+    var _goods;
+
+        Goods.findById(id, function (err, goods) {
+            if(goods == undefined) {
+                goods = new Goods({
+                    _id: goodsObj._id,
+                    type: goodsObj.type,
+                    warehouse: goodsObj.warehouse,
+                    other: goodsObj.other
+                })
+            }
+            _goods = _.extend(goods, goodsObj);
+            _goods.save(function (err, goods) {
+                if (err) {
+                    console.log(err);
+                }
+                res.send('success');
+            })
+        })
+
+});
 app.listen(port);
 console.log('the process start on port ' + port);
 
