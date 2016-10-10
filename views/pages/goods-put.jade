@@ -8,19 +8,19 @@ block content
                 .form-group
                     label.col-sm-2.control-label(for="inputId") 商品编号
                     .col-sm-5
-                        input#inputTitle.form-control(type="text",name="goods[_id]",value="#{goods._id}")
+                        input#inputId.form-control(type="text",name="goods[_id]",value="#{goods._id}")
                 .form-group
                     label.col-sm-2.control-label(for="inputType") 商品类型
                     .col-sm-5
-                        input#inputDoctor.form-control(type="text",name="goods[type]",value="#{goods.type}")
+                        input#inputType.form-control(type="text",name="goods[type]",value="#{goods.type}")
                 .form-group
                     label.col-sm-2.control-label(for="inputWarehouse") 仓库位置
                     .col-sm-5
-                        input#inputCountry.form-control(type="text",name="goods[warehouse]",value="#{goods.warehouse}")
+                        input#inputWarehouse.form-control(type="text",name="goods[warehouse]",value="#{goods.warehouse}")
                 .form-group
                     label.col-sm-2.control-label(for="inputOther") 备注
                     .col-sm-5
-                        input#inputLanguage.form-control(type="text",name="goods[other]",value="#{goods.other}")
+                        input#inputOther.form-control(type="text",name="goods[other]",value="#{goods.other}")
                 .form-group
                     .col-sm-offset-2.col-sm-5
                         button.btn.btn-default(type="submit") 录入

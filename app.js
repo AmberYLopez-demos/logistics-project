@@ -60,20 +60,15 @@ app.get('/users/list',function (req,res) {
 });
 // 商品信息页面
 app.get('/goods/list',function (req,res) {
-    res.render('goods-information',{
-        title: '商品信息列表',
-        goods:[{
-            _id:'20161010001',
-            type:'电器',
-            warehouse:'01库',
-            other:''
-        },{
-            _id:'20161010002',
-            type:'图书',
-            warehouse:'02库',
-            other:''
-        }]
-    })
+    Goods.fetch(function (err, goods) {
+        if (err) {
+            console.log(err);
+        }
+        res.render('goods-information', {
+            title: '商品页面列表',
+            goods: goods
+        })
+    });
 });
 
 //商品入库
