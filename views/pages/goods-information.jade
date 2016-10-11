@@ -14,7 +14,7 @@ block content
                 tbody
                     each item in goods
                         tr(class="item-id-#{item._id}")
-                            td: a(href="#") #{item._id}
+                            td: a(href="/goods/#{item._id}") #{item._id}
                             td #{item.type}
                             td #{item.warehouse}
                             td #{item.other}
