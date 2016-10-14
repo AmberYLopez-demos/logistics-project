@@ -83,82 +83,50 @@ app.get('/goods/add', function (req, res) {
         }
     })
 });
-// if (id !== 'undefined') {
-//     Movie.findById(id, function (err, movie) {
-//         if (err) {
-//             console.log(err);
-//         }
-//
-//         _movie = _.extend(movie, movieObj);
-//         _movie.save(function (err, movie) {
-//             if (err) {
-//                 console.log(err);
-//             }
-//             res.redirect('/movie/' + movie._id);
-//         })
-//     })
-// } else {
-//     _movie = new Movie({
-//         doctor: movieObj.doctor,
-//         title: movieObj.title,
-//         country: movieObj.country,
-//         language: movieObj.language,
-//         year: movieObj.year,
-//         poster: movieObj.poster,
-//         summary: movieObj.summary,
-//         flash: movieObj.flash
-//     });
-//
-//     _movie.save(function (err, movie) {
-//         if (err) {
-//             console.log(err);
-//         }
-//
-//         res.redirect('/movie/' + movie._id);
-//     })
-// }
 app.post('/goods/new', function (req, res) {
     var id = req.body.goods._id;
     var goodsObj = req.body.goods;
     var _goods;
-    Goods.findById(id, function (err, goods) {
-        if (id !== undefined) {
-            goods = new Goods({
-                _id: goodsObj._id,
-                type: goodsObj.type,
-                warehouse: goodsObj.warehouse,
-                other: goodsObj.other
-            });
-        }
-        _goods = _.extend(goods, goodsObj);
+
+    if (id !== undefined) {
+        Goods.findById(id, function (err, goods) {
+            if (err) {
+                console.log(err);
+            }
+            if (goods == undefined) {
+                goods = new Goods({
+                    _id: goodsObj._id,
+                    type: goodsObj.type,
+                    warehouse: goodsObj.warehouse,
+                    other: goodsObj.other
+                });
+            }
+
+            _goods = _.extend(goods, goodsObj);
+            _goods.save(function (err, goods) {
+                if (err) {
+                    console.log(err);
+                }
+                res.redirect('/goods/' + goods._id);
+            })
+        })
+    } else {
+        _goods = new Goods({
+            _id: goodsObj._id,
+            type: goodsObj.type,
+            warehouse: goodsObj.warehouse,
+            other: goodsObj.other
+        });
+
         _goods.save(function (err, goods) {
             if (err) {
                 console.log(err);
             }
-            res.redirect('/goods/list')
+            res.redirect('/goods/' + goods._id);
         })
-    })
-})
-// Goods.findById(id, function (err, goods) {
-//     if (goods == undefined) {
-//         goods = new Goods({
-//             _id: goodsObj._id,
-//             type: goodsObj.type,
-//             warehouse: goodsObj.warehouse,
-//             other: goodsObj.other
-//         })
-//     }
-//     _goods = _.extend(goods, goodsObj);
-//     _goods.save(function (err, goods) {
-//         if (err) {
-//             console.log(err);
-//         }
-//         res.redirect('/goods/list')
-//     })
-// })
-//
-// })
-// ;
+    }
+});
+
 //商品修改页面
 app.get('/goods/:id', function (req, res) {
     var id = req.params.id;
