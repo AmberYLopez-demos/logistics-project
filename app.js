@@ -3,8 +3,9 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var _ = require('underscore');
 var serveStatic = require('serve-static');
+var _ = require('underscore');
+
 // 设置端口号
 var port = process.env.PORT || 3000;
 var Goods = require('./models/goods');
@@ -20,7 +21,6 @@ app.set('view engine', 'jade');
 
 // 调用bodyParser，及bootstrap等
 app.use(bodyParser.urlencoded({extend: true}));
-app.use(serveStatic('bower_components'));
 app.use(serveStatic('public'));
 // 首页 index.jade
 app.get('/', function (req, res) {
@@ -59,24 +59,14 @@ app.get('/users/list', function (req, res) {
     })
 });
 // 商品信息页面
-app.get('/goods/list', function (req, res) {
-    Goods.fetch(function (err, goods) {
-        if (err) {
-            console.log(err);
-        }
-        res.render('goods-information', {
-            title: '商品页面列表',
-            goods: goods
-        })
-    });
-});
+
 
 //商品入库
 app.get('/goods/add', function (req, res) {
     res.render('goods-put', {
         title: '商品入库',
         goods: {
-            _id: '',
+            num:'',
             type: '',
             warehouse: '',
             other: ''
@@ -88,56 +78,87 @@ app.post('/goods/new', function (req, res) {
     var goodsObj = req.body.goods;
     var _goods;
 
-    if (id !== undefined) {
+    if (id !== 'undefined') {
         Goods.findById(id, function (err, goods) {
             if (err) {
                 console.log(err);
             }
-            if (goods == undefined) {
-                goods = new Goods({
-                    _id: goodsObj._id,
-                    type: goodsObj.type,
-                    warehouse: goodsObj.warehouse,
-                    other: goodsObj.other
-                });
-            }
-
             _goods = _.extend(goods, goodsObj);
             _goods.save(function (err, goods) {
                 if (err) {
                     console.log(err);
                 }
-                res.redirect('/goods/' + goods._id);
+                // res.send(_goods.num);
+                res.redirect('/goods/' + _goods.num);
             })
         })
     } else {
         _goods = new Goods({
-            _id: goodsObj._id,
+            _id:goodsObj.num,
+            num:goodsObj.num,
             type: goodsObj.type,
             warehouse: goodsObj.warehouse,
             other: goodsObj.other
         });
 
-        _goods.save(function (err, goods) {
+        _goods.save(function (err, goods) {//document must have an _id before saving
             if (err) {
                 console.log(err);
             }
-            res.redirect('/goods/' + goods._id);
+            res.redirect('/goods/' + _goods.num);
+
         })
     }
 });
 
-//商品修改页面
-app.get('/goods/:id', function (req, res) {
-    var id = req.params.id;
+
+app.get('/goods/list', function (req, res) {
+    Goods.fetch(function (err, goods) {
+        if (err) {
+            console.log(err);
+        }
+        res.render('goods-information', {
+            title: '商品页面列表',
+            goods: goods
+        })
+    });
+});
+app.get('/goods/:num', function (req, res) {
+    var id = req.params.num;
 
     Goods.findById(id, function (err, goods) {
         res.render('goods-detail', {
-            title: '商品修改' + goods._id,
+            title: '详情页',
             goods: goods
         })
-
     });
+});
+
+//商品修改页面
+app.get('/update/:num', function (req, res) {
+    var num = req.params.num;
+    if (num) {
+        Goods.findById(num, function (err, goods) {
+            res.render('goods-detail', {
+                title: '商品修改',
+                goods: goods
+            })
+        });
+    }
+});
+
+//删除
+app.delete('/admin/list', function (req, res) {
+    var id = req.query.id;
+    if (id) {
+        Goods.remove({_id: id}, function (err, goods) {
+            if (err) {
+                console.log(err)
+            } else {
+                res.json({success: 1});
+            }
+        })
+    }
 });
 app.listen(port);
 console.log('the process start on port ' + port);

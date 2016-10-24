@@ -4,11 +4,11 @@ block content
     .container
         .row
             form.form-horizontal(method="post",action="/goods/new")
-                input(type="hidden",name="goods[_id]",value="#{goods._id}")
+                input(type="hidden",name="goods[_id]",value="#{goods.num}")
                 .form-group
-                    label.col-sm-2.control-label(for="inputId") 商品编号
+                    label.col-sm-2.control-label(for="inputNum") 商品编号
                     .col-sm-5
-                        input#inputId.form-control(type="text",name="goods[_id]",value="#{goods._id}")
+                        input#inputNum.form-control(type="text",name="goods[num]",value="#{goods.num}")
                 .form-group
                     label.col-sm-2.control-label(for="inputType") 商品类型
                     .col-sm-5

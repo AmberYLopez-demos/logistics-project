@@ -14,9 +14,10 @@ block content
                 tbody
                     each item in goods
                         tr(class="item-id-#{item._id}")
-                            td: a(href="/goods/#{item._id}") #{item._id}
+                            td: a(href="/update/#{item.num}") #{item.num}
                             td #{item.type}
                             td #{item.warehouse}
                             td #{item.other}
                             td
-                                button.btn.btn-danger.del(type="button",data-id="#{item._id}")删除
+                                button.btn.btn-danger.del(type="button",data-id="#{item._id}") 删除
+    script(src='/js/delete.js')

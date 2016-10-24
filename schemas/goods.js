@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var GoodsSchema = new mongoose.Schema({
     _id:String,
+    num:String,//编号
     type:String,
     warehouse:String,
     other:String,
