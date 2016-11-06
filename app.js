@@ -9,6 +9,11 @@ var _ = require('underscore');
 // 设置端口号
 var port = process.env.PORT || 3000;
 var Goods = require('./models/goods');
+var User = require('./models/user');
+
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var app = express();
 
 mongoose.connect('mongodb://localhost/logistics');
@@ -22,8 +27,27 @@ app.set('view engine', 'jade');
 // 调用bodyParser，及bootstrap等
 app.use(bodyParser.urlencoded({extend: true}));
 app.use(serveStatic('public'));
+app.use(cookieParser());
+app.use(session({
+    secret: 'imooc',
+    store: new MongoStore({
+        url: 'mongodb://localhost/imooc-movie',
+        collection: 'sessions'
+    })
+}));
+app.use(function (req, res, next) {
+    var _user = req.session.user;
+    //console.log(_user);//页面一刷新就读取到 AmberYLOpez,加密的密码
+
+    app.locals.user = _user;
+    return next();
+});
+
+
 // 首页 index.jade
 app.get('/', function (req, res) {
+    var user = req.session.user;//req.session没有
+
     res.render('index', {
         title: '首页'
     })
@@ -73,6 +97,7 @@ app.get('/goods/add', function (req, res) {
         }
     })
 });
+//商品存储
 app.post('/goods/new', function (req, res) {
     var id = req.body.goods._id;
     var goodsObj = req.body.goods;
@@ -160,6 +185,63 @@ app.delete('/admin/list', function (req, res) {
         })
     }
 });
+
+//注册
+app.post('/user/signup', function (req, res) {
+    var _user = req.body.user;//获取表单数据，是一个对象 也可用req.param('user')
+    User.findOne({name: _user.name}, function (err, user) {
+        if (err) {
+            console.log(err)
+        }
+        if (user) {//用户名已存在
+            return res.redirect('/');
+        } else {
+            var user = new User(_user);
+            user.save(function (err, user) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+            res.redirect('/');
+        }
+    })
+});
+
+//登录
+app.post('/user/signin', function (req, res) {
+    var _user = req.body.user;
+    var name = _user.name;
+    var password = _user.password;
+    //console.log(_user);//AmberYLOpez,l199603ay
+
+    User.findOne({name: name}, function (err, user) {
+        if (err) {
+            console.log(err);
+        }
+        if (!user) {//用户不存在
+            return res.redirect('/');
+        }
+        user.comparePassword(password, function (err, isMatch) {
+            if (err) {
+                console.log(err);
+            }
+            if (isMatch) {
+                req.session.user = user;
+                //console.log(req.session.user);//AmberYLOPez,加密后的密码
+                return res.redirect('/');
+            } else {
+                console.log('密码不匹配');
+            }
+        })
+    })
+});
+//登出
+app.get('/logout', function (req, res) {
+    delete req.session.user;
+    delete app.locals.user;
+    res.redirect('/');
+});
+
 app.listen(port);
 console.log('the process start on port ' + port);
 

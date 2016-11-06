@@ -1,0 +1,102 @@
+doctype
+html
+    head
+        meta(charset="utf-8")
+        title #{title}
+        include ./views/includes/head
+        style.
+            html body {
+                height: 100%;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            img {
+                cursor: hand;
+            }
+
+            .content {
+                height: 100%;
+                background: #E5E5E5;
+                overflow: hidden;
+            }
+
+            .bottom {
+                width: 100%;
+            }
+
+            .item {
+                position: relative;
+                /*top: -480px;*/
+                bottom: 390px;
+                overflow: hidden;
+                width: 33.15%;
+                height: 249px;
+                float: left;
+                border: solid 1px #ccc;
+                background: #E5E5E5;
+            }
+
+            .item:nth-child(-n +3) { /*选择小与3前面的远渡*/
+                border-top: none;
+            }
+
+            .item:nth-child(n) {
+                border-bottom: none;
+            }
+
+            .item:hover {
+                background-color: #cccccc;
+            }
+
+            .item-content {
+                position: relative;
+                top: 13%;
+                width: 40%;
+                height: 200px;
+                margin: auto;
+            }
+
+            .text {
+                text-align: center;
+                margin: 10px;
+                color: #222;
+                font-size: 18px;
+                font-family: "Microsoft YaHei";
+            }
+
+            .icon-info {
+                width: 147px;
+                height: 128px;
+            }
+
+            .icon-storage {
+                width: 147px;
+                height: 128px;
+            }
+
+            .icon-statement {
+                width: 147px;
+                height: 128px;
+            }
+
+            .icon-finance {
+                width: 147px;
+                height: 128px;
+            }
+
+            .icon-maintain {
+                width: 147px;
+                height: 128px;
+            }
+
+            .icon-system {
+                width: 147px;
+                height: 128px;
+            }
+
+    body
+
